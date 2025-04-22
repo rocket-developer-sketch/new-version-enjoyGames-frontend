@@ -1,0 +1,76 @@
+.ranking-list {
+  max-height: 400px;
+  overflow-y: auto;
+  margin: 20px 0;
+  font-size: 16px;
+}
+
+.rank-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.rank-row .rank {
+  font-weight: bold;
+  min-width: 40px;
+  font-size: 15px;
+}
+
+.rank-row.top-1 .rank {
+  color: gold;
+  font-size: 25px;
+}
+
+.rank-row.top-2 .rank {
+  color: silver;
+  font-size: 20px;
+}
+
+.rank-row.top-3 .rank {
+  color: #cd7f32; /* bronze */
+  font-size: 18px;
+}
+
+.ranking-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7); /* 어두운 배경 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.ranking-popup {
+  background-color: white;
+  padding: 20px 40px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  max-height: 80vh;
+  overflow-y: auto;
+  min-width: 300px;
+}
+
+.ranking-popup h2{
+  color: #111;
+}
+
+.ranking-list div {
+  color: #111;
+}
+
+.ranking-popup .close-button-container {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.ranking-scroll-container {
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 40px; /* 오른쪽 패딩 추가로 스크롤바와 콘텐츠 사이 간격 확보 */
+}

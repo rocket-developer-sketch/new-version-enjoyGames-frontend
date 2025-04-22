@@ -1,0 +1,42 @@
+body, html, #root {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+}
+
+.game-main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+  width: 100%;
+}
+
+/* 캔버스 + 왼쪽 박스를 감싸는 래퍼 */
+.canvas-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+/* 왼쪽 정보 박스 - canvas 기준 위치 */
+.left-info-box {
+  position: absolute;
+  top: 50%;
+  left: -250px; /* 캔버스 왼쪽에서 떨어진 거리 */
+  transform: translateY(-50%);
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 12px 16px;
+  border-radius: 8px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 16px;
+}
+
+
+canvas {
+  display: block;
+  margin: 30px auto;
+}
