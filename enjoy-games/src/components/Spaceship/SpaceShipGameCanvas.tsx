@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { pythagoras } from '../game/calculate';
+import { pythagoras } from '../../game/calculate';
 
 interface Ball {
   mx: number;

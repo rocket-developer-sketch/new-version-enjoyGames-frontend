@@ -1,10 +1,10 @@
 import { useEffect, useState, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { saveAuthInfo, getAuthInfo, AuthInfo } from '../utils/authStorage';
-import { GameProvider, EXTRA_INFO_MAP } from '../context/GameContext';
-import MashRabbitGameCanvas from '../components/MashRabbitGameCanvas';
-import PikaBallGameCanvas from "../components/PikaBallGameCanvas";
-import SpaceShipGameCanvas from '../components/SpaceShipGameCanvas';
+import { GameProvider, EXTRA_INFO_MAP, GAME_GUIDE_MAP } from '../context/GameContext';
+import MashRabbitGameCanvas from '../components/Mashrabbit/MashRabbitGameCanvas';
+import PikaBallGameCanvas from '../components/Pika/PikaBallGameCanvas';
+import SpaceShipGameCanvas from '../components/Spaceship/SpaceShipGameCanvas';
 import GameLayout from '../components/GameLayout';
 import axios from 'axios';
 import './GamePage.css';
@@ -13,25 +13,29 @@ const GamePage = () => {
   const { gameType } = useParams<{ gameType: string }>();
   const navigate = useNavigate();
   const auth = getAuthInfo() as AuthInfo;
-  const DEFAULT_TIME_OUT = 45; // seconds
-  const [timeLeft, setTimeLeft] = useState(DEFAULT_TIME_OUT); // 테스트용
+
+  const DEFAULT_TIME_OUT = 45; // 게임 기본 시간
+  const [timeLeft, setTimeLeft] = useState(DEFAULT_TIME_OUT);
   const [score, setScore] = useState(0);
   const [highlightScore, setHighlightScore] = useState(false);
   const [scoreScale, setScoreScale] = useState(1);
   const [finalScore, setFinalScore] = useState<number | null>(null);
   const [showRestartUI, setShowRestartUI] = useState(false);
   const [gameKey, setGameKey] = useState(Date.now());
-  const hasSubmitted = useRef(false);
-
+  const [isModalOpen, setIsModalOpen] = useState(true); // ✨ 게임 설명 모달 열림 여부
   const [tries, setTries] = useState(3);
 
-  // 타이머 감소
+  const hasSubmitted = useRef(false);
+
+  // ✅ 게임 시작할 때 타이머 시작
   useEffect(() => {
     if (!auth) {
       alert('Unauthorized access. Please go back to home.');
       navigate('/');
       return;
     }
+
+    if (isModalOpen) return; // 아직 모달 열려있으면 타이머 시작하지 않음
 
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
@@ -44,9 +48,9 @@ const GamePage = () => {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [gameKey]);
+  }, [gameKey, isModalOpen]); // ✨ gameKey 또는 isModalOpen이 바뀌면 다시 타이머 설정
 
-  // 점수 변화를 감지해 강조 효과 부여
+  // ✅ 점수 효과
   useEffect(() => {
     if (score === 0) return;
 
@@ -61,7 +65,7 @@ const GamePage = () => {
     return () => clearTimeout(timeout);
   }, [score]);
 
-  // 종료 조건 감시
+  // ✅ 게임 오버 처리
   const handleGameOver = async (score: number) => {
     if (hasSubmitted.current) return;
     hasSubmitted.current = true;
@@ -109,7 +113,7 @@ const GamePage = () => {
     }
   };
 
-  // 게임 재시작
+  // ✅ 다시 시작
   const handleRestart = async () => {
     try {
       const oldAuth = getAuthInfo();
@@ -125,18 +129,20 @@ const GamePage = () => {
         nickName: res.data.data.nickName
       });
 
+      // 초기화
       setScore(0);
       setTimeLeft(DEFAULT_TIME_OUT);
       setFinalScore(null);
       hasSubmitted.current = false;
       setShowRestartUI(false);
-      setGameKey(Date.now());
+      setGameKey(Date.now()); // 강제 리마운트
     } catch (err) {
       console.error('재시작 실패:', err);
       alert('재시작 실패 😢');
     }
   };
 
+  // ✅ 게임 렌더링
   const renderGameComponent = (setScore: (score: number) => void, setTries: (tries: number) => void) => {
     switch (gameType?.toUpperCase()) {
       case 'RABBIT':
@@ -172,34 +178,59 @@ const GamePage = () => {
     }
   };
 
-  // ✨ 변경된 부분: extraInfo 가져오기
+  // ✅ extraInfo (게임별 추가 정보)
   const extraInfo = gameType && EXTRA_INFO_MAP[gameType as keyof typeof EXTRA_INFO_MAP]
     ? EXTRA_INFO_MAP[gameType as keyof typeof EXTRA_INFO_MAP]({ tries })
     : null;
 
-  return (
-    <GameProvider gameType={gameType?.toUpperCase() as any}>
-      <GameLayout
-        gameType={gameType || ''}
-        timeLeft={timeLeft}
-        score={score}
-        highlightScore={highlightScore}
-        scoreScale={scoreScale}
-        extraInfo={extraInfo} // 게임별 정보 전달
-      >
-        {renderGameComponent(setScore, setTries)}
-
-        {showRestartUI && (
-          <div className="restart-ui">
-            <div className="game-over-tit">Game Over</div>
-            <div className="final-score">🎯 Final Score: {finalScore}</div>
-            <button onClick={handleRestart}>다시 시작</button>
-            <button onClick={() => navigate('/')}>홈으로</button>
+    return (
+      <GameProvider gameType={gameType?.toUpperCase() as any}>
+        {isModalOpen ? (
+          // ✨ 모달만 보여줄 때
+          <div className="game-guide-overlay">
+            <div className="game-guide-modal">
+              <div className="game-guide-content">
+                {(() => {
+                  const GuideComponent = GAME_GUIDE_MAP[gameType?.toUpperCase() as keyof typeof GAME_GUIDE_MAP];
+                  return GuideComponent ? <GuideComponent /> : <p>게임 방법을 준비 중입니다.</p>;
+                })()}
+                <button
+                  className="start-button"
+                  onClick={() => {
+                    setIsModalOpen(false);
+                    setTimeLeft(DEFAULT_TIME_OUT); // 타이머 초기화
+                    setGameKey(Date.now());         // 강제 리마운트 (중요)
+                  }}
+                >
+                  게임 시작
+                </button>
+              </div>
+            </div>
           </div>
+        ) : (
+          // ✨ 게임 레이아웃 전체
+          <GameLayout
+            gameType={gameType || ''}
+            timeLeft={timeLeft}
+            score={score}
+            highlightScore={highlightScore}
+            scoreScale={scoreScale}
+            extraInfo={extraInfo}
+          >
+            {renderGameComponent(setScore, setTries)}
+    
+            {showRestartUI && (
+              <div className="restart-ui">
+                <div className="game-over-tit">Game Over</div>
+                <div className="final-score">🎯 Final Score: {finalScore}</div>
+                <button onClick={handleRestart}>다시 시작</button>
+                <button onClick={() => navigate('/')}>홈으로</button>
+              </div>
+            )}
+          </GameLayout>
         )}
-      </GameLayout>
-    </GameProvider>
-  );
+      </GameProvider>
+    );
 };
 
 export default GamePage;

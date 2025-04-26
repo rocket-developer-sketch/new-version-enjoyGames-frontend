@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
-import { pythagoras } from '../game/calculate';
-import { createGradient } from '../game/style';
+import { pythagoras } from '../../game/calculate';
+import { createGradient } from '../../game/style';
 
 interface Hole {
   x: number;

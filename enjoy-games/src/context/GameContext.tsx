@@ -1,10 +1,19 @@
 import React, { createContext, useContext, ReactNode } from 'react';
-import SpaceShipInfo from '../components/SpaceShipInfo';
+import SpaceShipInfo from '../components/Spaceship/SpaceShipInfo';
+import MashRabbitGuide from '../components/Mashrabbit/MashRabbitGuide';
+import PikaBallGuide from '../components/Pika/PikaBallGuide';
+import SpaceShipGuide from '../components/Spaceship/SpaceShipGuide';
 
 export const GAME_TYPE_MAP = {
-  RABBIT: 'MashRabbit Hunter',
-  PIKACHU: 'Pika Ball',
+  RABBIT: 'Mash Rabbit Hunter',
+  PIKACHU: 'Pika ValleyBall',
   COMBAT: 'Spaceship',
+} as const;
+
+export const GAME_GUIDE_MAP = {
+  RABBIT: MashRabbitGuide,
+  PIKACHU: PikaBallGuide,
+  COMBAT: SpaceShipGuide
 } as const;
 
 export const EXTRA_INFO_MAP = {
@@ -17,6 +26,7 @@ interface GameContextType {
   gameType: GameType | null;
   gameLabel: string;
 }
+
 
 const GameContext = createContext<GameContextType>({
   gameType: null,
