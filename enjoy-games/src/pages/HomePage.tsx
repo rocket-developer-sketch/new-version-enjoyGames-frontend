@@ -1,5 +1,4 @@
 import { useNavigate } from 'react-router-dom';
-import { GameProvider } from '../context/GameContext';
 import './Homepage.css';
 
 const HomePage = () => {

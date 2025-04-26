@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
 import { pythagoras } from '../game/calculate';
-import { createGradient } from '../game/style';
 
 interface Ball {
   mx: number;
@@ -16,12 +15,13 @@ interface SpaceShipGameCanvasProps {
   onGameOver: (score: number) => void;
   timeLeft: number;
   setScore: (score: number) => void;
+  setTries: (tries: number) => void;
 }
 
 const canvasWidth = 600;
 const canvasHeight = 800;
 
-const SpaceShipGameCanvas = ({ onGameOver, timeLeft, setScore }: SpaceShipGameCanvasProps) => {
+const SpaceShipGameCanvas = ({ onGameOver, timeLeft, setScore, setTries }: SpaceShipGameCanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const bg1 = useRef(new Image());
@@ -105,7 +105,7 @@ const SpaceShipGameCanvas = ({ onGameOver, timeLeft, setScore }: SpaceShipGameCa
     if (!ctx) return;
 
     const drawScreen = () => {
-      if (triesRef.current <= 0 || timeLeft === 0) {
+      if (timeLeft === 0 || triesRef.current <= 0) {
         if (animationId.current) cancelAnimationFrame(animationId.current);
         onGameOver(scoreRef.current);
         return;
@@ -115,7 +115,6 @@ const SpaceShipGameCanvas = ({ onGameOver, timeLeft, setScore }: SpaceShipGameCa
 
       ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
-      // Background
       bg1Y.current += 2;
       bg2Y.current += 2;
 
@@ -125,18 +124,15 @@ const SpaceShipGameCanvas = ({ onGameOver, timeLeft, setScore }: SpaceShipGameCa
       ctx.drawImage(bg1.current, 0, bg1Y.current, canvasWidth, canvasHeight);
       ctx.drawImage(bg2.current, 0, bg2Y.current, canvasWidth, canvasHeight);
 
-      // Missiles
       missiles.current.forEach(missile => {
         missile.my -= 10;
         ctx.drawImage(missileImg.current, missile.mx - 2.5, missile.my, 5, 20);
       });
       missiles.current = missiles.current.filter(m => m.my > -50);
 
-      // Player Ship
       const shipImage = shipImages.current[counter.current % 4];
       ctx.drawImage(shipImage, shipPos.current.x - 25, shipPos.current.y - 25, 50, 50);
 
-      // Enemies
       if (counter.current % 40 === 0) {
         enemies.current.push({ x: Math.floor(Math.random() * 550), y: 10 });
       }
@@ -148,13 +144,7 @@ const SpaceShipGameCanvas = ({ onGameOver, timeLeft, setScore }: SpaceShipGameCa
       });
       enemies.current = enemies.current.filter(e => e.y <= canvasHeight + 50);
 
-      // Collisions
       checkCollisions();
-
-      // Score and tries
-      ctx.font = '35px sans-serif';
-      createGradient(ctx, canvasRef.current!);
-      ctx.fillText(`Tries: ${triesRef.current}`, 300, 50);
 
       animationId.current = requestAnimationFrame(drawScreen);
     };
@@ -171,6 +161,7 @@ const SpaceShipGameCanvas = ({ onGameOver, timeLeft, setScore }: SpaceShipGameCa
       const d = pythagoras(shipPos.current.x, shipPos.current.y, enemy.x, enemy.y);
       if (d < 40 && triesRef.current > 0) {
         triesRef.current--;
+        setTries(triesRef.current);
         enemy.x = -300;
       }
 

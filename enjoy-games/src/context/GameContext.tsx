@@ -1,9 +1,14 @@
 import React, { createContext, useContext, ReactNode } from 'react';
+import SpaceShipInfo from '../components/SpaceShipInfo';
 
 export const GAME_TYPE_MAP = {
   RABBIT: 'MashRabbit Hunter',
   PIKACHU: 'Pika Ball',
   COMBAT: 'Spaceship',
+} as const;
+
+export const EXTRA_INFO_MAP = {
+  COMBAT: (props: { tries: number }) => <SpaceShipInfo tries={props.tries} />,
 } as const;
 
 type GameType = keyof typeof GAME_TYPE_MAP;

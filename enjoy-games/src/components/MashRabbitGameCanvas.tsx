@@ -94,7 +94,7 @@ const MashRabbitGameCanvas = ({ onGameOver, timeLeft, setScore }: MashRabbitGame
         onGameOver(scoreRef.current);
       }
 
-      // ✅ Game Over 시 배경만 흐르게, 나머지 멈춤
+      // Game Over 시 배경만 흐르게, 나머지 멈춤
       if (!gameOverTriggered.current) {
         if (counter % 30 === 0) {
           rabbitVX = Math.floor(Math.random() * 7 - 3);
@@ -118,7 +118,7 @@ const MashRabbitGameCanvas = ({ onGameOver, timeLeft, setScore }: MashRabbitGame
         }
       }
 
-      // ✅ 배경 스크롤 속도 2배 증가
+      // 배경 스크롤 속도 2배 증가
       scrollXRef.current -= 2;
       if (scrollXRef.current <= -imageWidth) {
         scrollXRef.current = 0;
@@ -155,7 +155,7 @@ const MashRabbitGameCanvas = ({ onGameOver, timeLeft, setScore }: MashRabbitGame
         // ctx.fillText(`🎯 Score: ${scoreRef.current}`, canvasWidth / 2, 37);
       }
 
-      // ✅ Game Over 오버레이 출력
+      // Game Over 오버레이 출력
       if (gameOverTriggered.current) {
         ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -170,7 +170,7 @@ const MashRabbitGameCanvas = ({ onGameOver, timeLeft, setScore }: MashRabbitGame
       animationIdRef.current = requestAnimationFrame(drawScreen);
     };
 
-    // ✅ 최초 1회 실행
+    // 최초 1회 실행
     animationIdRef.current = requestAnimationFrame(drawScreen);
 
     canvas.addEventListener('mousemove', moveSnipe);

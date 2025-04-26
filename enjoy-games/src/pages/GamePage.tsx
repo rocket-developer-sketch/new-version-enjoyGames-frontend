@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { saveAuthInfo, getAuthInfo, AuthInfo } from '../utils/authStorage';
-import { GameProvider } from '../context/GameContext';
+import { GameProvider, EXTRA_INFO_MAP } from '../context/GameContext';
 import MashRabbitGameCanvas from '../components/MashRabbitGameCanvas';
 import PikaBallGameCanvas from "../components/PikaBallGameCanvas";
 import SpaceShipGameCanvas from '../components/SpaceShipGameCanvas';
@@ -13,17 +13,19 @@ const GamePage = () => {
   const { gameType } = useParams<{ gameType: string }>();
   const navigate = useNavigate();
   const auth = getAuthInfo() as AuthInfo;
-
-  const [timeLeft, setTimeLeft] = useState(10); // 테스트용 5초
+  const DEFAULT_TIME_OUT = 45; // seconds
+  const [timeLeft, setTimeLeft] = useState(DEFAULT_TIME_OUT); // 테스트용
   const [score, setScore] = useState(0);
   const [highlightScore, setHighlightScore] = useState(false);
-  const [scoreScale, setScoreScale] = useState(1); 
+  const [scoreScale, setScoreScale] = useState(1);
   const [finalScore, setFinalScore] = useState<number | null>(null);
   const [showRestartUI, setShowRestartUI] = useState(false);
-  const [gameKey, setGameKey] = useState(Date.now()); // re-mount key
+  const [gameKey, setGameKey] = useState(Date.now());
   const hasSubmitted = useRef(false);
 
-  // 🔁 타이머 감소
+  const [tries, setTries] = useState(3);
+
+  // 타이머 감소
   useEffect(() => {
     if (!auth) {
       alert('Unauthorized access. Please go back to home.');
@@ -42,37 +44,34 @@ const GamePage = () => {
     }, 1000);
 
     return () => clearInterval(timer);
-
-
   }, [gameKey]);
 
-  // ✅ 점수 변화를 감지해 강조 효과 부여
+  // 점수 변화를 감지해 강조 효과 부여
   useEffect(() => {
     if (score === 0) return;
-  
+
     setHighlightScore(true);
-    setScoreScale(1.5); // 커졌다가
-  
+    setScoreScale(1.5);
+
     const timeout = setTimeout(() => {
       setHighlightScore(false);
-      setScoreScale(1); // 다시 작아짐 (원래 크기로)
-    }, 300); // 300ms 동안 유지
-  
+      setScoreScale(1);
+    }, 300);
+
     return () => clearTimeout(timeout);
   }, [score]);
 
-  // ✅ 종료 조건 감시
+  // 종료 조건 감시
   const handleGameOver = async (score: number) => {
     if (hasSubmitted.current) return;
     hasSubmitted.current = true;
 
     setFinalScore(score);
-    setShowRestartUI(true); // 재시작 UI 띄우기
+    setShowRestartUI(true);
 
     try {
       const { token, gameType, jti, nickName } = auth;
 
-      // 1. signedToken 요청
       const signRes = await axios.post('http://localhost:8081/api/v1/token/scores', {
         gameType,
         jti,
@@ -86,7 +85,6 @@ const GamePage = () => {
 
       const signedToken = signRes.data.data.signedToken;
 
-      // 2. 점수 저장
       await axios.post('http://localhost:8081/api/v1/scores', {
         gameType,
         nickName,
@@ -99,7 +97,6 @@ const GamePage = () => {
         },
       });
 
-      // alert(`게임 종료! 점수: ${score}`);
     } catch (err) {
       if (axios.isAxiosError(err)) {
         const response = err.response?.data;
@@ -112,7 +109,7 @@ const GamePage = () => {
     }
   };
 
-  // ✅ 게임 재시작
+  // 게임 재시작
   const handleRestart = async () => {
     try {
       const oldAuth = getAuthInfo();
@@ -128,20 +125,19 @@ const GamePage = () => {
         nickName: res.data.data.nickName
       });
 
-      // 상태 초기화
       setScore(0);
-      setTimeLeft(10);
+      setTimeLeft(DEFAULT_TIME_OUT);
       setFinalScore(null);
       hasSubmitted.current = false;
       setShowRestartUI(false);
-      setGameKey(Date.now()); // 컴포넌트 강제 리마운트
+      setGameKey(Date.now());
     } catch (err) {
       console.error('재시작 실패:', err);
       alert('재시작 실패 😢');
     }
   };
 
-  const renderGameComponent = (setScore: (score: number) => void) => {
+  const renderGameComponent = (setScore: (score: number) => void, setTries: (tries: number) => void) => {
     switch (gameType?.toUpperCase()) {
       case 'RABBIT':
         return (
@@ -153,7 +149,7 @@ const GamePage = () => {
           />
         );
       case 'PIKACHU':
-        return  (
+        return (
           <PikaBallGameCanvas
             key={gameKey}
             onGameOver={handleGameOver}
@@ -168,6 +164,7 @@ const GamePage = () => {
             onGameOver={handleGameOver}
             timeLeft={timeLeft}
             setScore={setScore}
+            setTries={setTries}
           />
         );
       default:
@@ -175,10 +172,22 @@ const GamePage = () => {
     }
   };
 
+  // ✨ 변경된 부분: extraInfo 가져오기
+  const extraInfo = gameType && EXTRA_INFO_MAP[gameType as keyof typeof EXTRA_INFO_MAP]
+    ? EXTRA_INFO_MAP[gameType as keyof typeof EXTRA_INFO_MAP]({ tries })
+    : null;
+
   return (
     <GameProvider gameType={gameType?.toUpperCase() as any}>
-      <GameLayout gameType={gameType || ''} timeLeft={timeLeft} score={score} highlightScore={highlightScore} scoreScale={scoreScale}>
-        {renderGameComponent(setScore)}
+      <GameLayout
+        gameType={gameType || ''}
+        timeLeft={timeLeft}
+        score={score}
+        highlightScore={highlightScore}
+        scoreScale={scoreScale}
+        extraInfo={extraInfo} // 게임별 정보 전달
+      >
+        {renderGameComponent(setScore, setTries)}
 
         {showRestartUI && (
           <div className="restart-ui">

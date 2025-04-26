@@ -3,7 +3,6 @@ import { getAuthInfo } from '../utils/authStorage';
 import { useGameContext } from '../context/GameContext';
 import './GameLayout.css';
 
-
 interface GameLayoutProps {
   gameType: string;
   timeLeft: number;
@@ -11,9 +10,18 @@ interface GameLayoutProps {
   highlightScore?: boolean;
   scoreScale?: number;
   children: ReactNode; // 이 안에 각 게임 캔버스 들어감
+  extraInfo?: React.ReactNode; // 추가
 }
 
-const GameLayout = ({ gameType, timeLeft, score, highlightScore, scoreScale, children }: GameLayoutProps) => {
+const GameLayout = ({
+  gameType,
+  timeLeft,
+  score,
+  highlightScore,
+  scoreScale,
+  extraInfo,
+  children,
+}: GameLayoutProps) => {
   const auth = getAuthInfo();
   const { gameLabel } = useGameContext();
 
@@ -29,26 +37,35 @@ const GameLayout = ({ gameType, timeLeft, score, highlightScore, scoreScale, chi
         <div className="canvas-wrapper">
           {/* 왼쪽 박스 - canvas 기준 */}
           <div className="left-info-box">
-            {/* <div className="info-line"><strong>🎮 {gameType.toUpperCase()} Game</strong></div> */}
             <div className="info-line"><strong>🎮 {gameLabel}</strong></div>
-            
             <div className="info-line"><strong>Player:</strong> {auth?.nickName}</div>
             <div className="info-line"><strong>Time left:</strong> {formatTime(timeLeft)}</div>
-            <div className="info-line"   style={{
+            <div
+              className="info-line"
+              style={{
                 color: highlightScore ? '#ffe600' : 'white',
                 transform: `scale(${scoreScale})`,
                 transition: 'transform 0.3s ease, color 0.3s ease',
-                display: 'inline-block', // transform 적용을 위해 필요
-              }}>
-              <strong>Score:</strong> {score} </div>
+                display: 'inline-block',
+              }}
+            >
+              <strong>Score:</strong> {score}
+            </div>
+
+            {/* 게임 별 추가 정보: tries 등 */}
+            {extraInfo && (
+              <div className="info-line">
+                {extraInfo}
+              </div>
+            )}
           </div>
-  
+
+          {/* 캔버스 영역 */}
           {children}
         </div>
       </main>
     </div>
   );
-  
 };
 
 export default GameLayout;
