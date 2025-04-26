@@ -15,11 +15,11 @@ const HomePage = () => {
       <div className="home-wrapper">
         <div className="home-box">
           <h1>🎮 Choose a Game</h1>
-          <button onClick={() => handleGameSelect('RABBIT')}>MashRabbit Hunter</button>
+          <button onClick={() => handleGameSelect('RABBIT')}>Marsh Rabbit Hunter</button>
           <br />
-          <button onClick={() => handleGameSelect('TAP')}>Tap Game</button>
+          <button onClick={() => handleGameSelect('PIKACHU')}>Pika Volleyball</button>
           <br />
-          <button onClick={() => handleGameSelect('FLIP')}>Flip Game</button>
+          <button onClick={() => handleGameSelect('COMBAT')}>Spaceship</button>
         </div>
       </div>
   );

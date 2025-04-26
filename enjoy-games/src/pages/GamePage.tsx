@@ -3,6 +3,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { saveAuthInfo, getAuthInfo, AuthInfo } from '../utils/authStorage';
 import { GameProvider } from '../context/GameContext';
 import MashRabbitGameCanvas from '../components/MashRabbitGameCanvas';
+import PikaBallGameCanvas from "../components/PikaBallGameCanvas";
+import SpaceShipGameCanvas from '../components/SpaceShipGameCanvas';
 import GameLayout from '../components/GameLayout';
 import axios from 'axios';
 import './GamePage.css';
@@ -12,7 +14,7 @@ const GamePage = () => {
   const navigate = useNavigate();
   const auth = getAuthInfo() as AuthInfo;
 
-  const [timeLeft, setTimeLeft] = useState(5); // 테스트용 5초
+  const [timeLeft, setTimeLeft] = useState(10); // 테스트용 5초
   const [score, setScore] = useState(0);
   const [highlightScore, setHighlightScore] = useState(false);
   const [scoreScale, setScoreScale] = useState(1); 
@@ -127,7 +129,8 @@ const GamePage = () => {
       });
 
       // 상태 초기화
-      setTimeLeft(5);
+      setScore(0);
+      setTimeLeft(10);
       setFinalScore(null);
       hasSubmitted.current = false;
       setShowRestartUI(false);
@@ -149,10 +152,24 @@ const GamePage = () => {
             setScore={setScore}
           />
         );
-      case 'TAP':
-        return <div>[TapGameCanvas Here]</div>;
-      case 'FLIP':
-        return <div>[FlipGameCanvas Here]</div>;
+      case 'PIKACHU':
+        return  (
+          <PikaBallGameCanvas
+            key={gameKey}
+            onGameOver={handleGameOver}
+            timeLeft={timeLeft}
+            setScore={setScore}
+          />
+        );
+      case 'COMBAT':
+        return (
+          <SpaceShipGameCanvas
+            key={gameKey}
+            onGameOver={handleGameOver}
+            timeLeft={timeLeft}
+            setScore={setScore}
+          />
+        );
       default:
         return <p>Unknown game type</p>;
     }

@@ -2,8 +2,8 @@ import React, { createContext, useContext, ReactNode } from 'react';
 
 export const GAME_TYPE_MAP = {
   RABBIT: 'MashRabbit Hunter',
-  TAP: 'Tap Game',
-  FLIP: 'Flip Game',
+  PIKACHU: 'Pika Ball',
+  COMBAT: 'Spaceship',
 } as const;
 
 type GameType = keyof typeof GAME_TYPE_MAP;
