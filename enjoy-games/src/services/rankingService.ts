@@ -1,5 +1,3 @@
-// services/rankingService.ts
-import axios from 'axios';
 import { ApiResponse } from '../models/ApiResponse';
 import { RankingEntry } from '../models/Ranking';
 import apiClient from '../apis/apiClient';
