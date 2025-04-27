@@ -1,6 +1,5 @@
 import { ReactNode } from 'react';
 import { getAuthInfo } from '../utils/authStorage';
-import { useGameContext } from '../context/GameContext';
 import { useTranslation } from 'react-i18next';
 
 import './GameLayout.css';
@@ -25,7 +24,6 @@ const GameLayout = ({
   children,
 }: GameLayoutProps) => {
   const auth = getAuthInfo();
-  const { gameLabel } = useGameContext();
   const { t } = useTranslation();
 
   const formatTime = (seconds: number) => {

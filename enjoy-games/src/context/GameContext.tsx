@@ -1,5 +1,4 @@
-import React, { createContext, useContext, ReactNode } from 'react';
-
+import { createContext, useContext, ReactNode } from 'react';
 import SpaceShipInfo from '../components/Spaceship/SpaceShipInfo';
 import MashRabbitGuide from '../components/Mashrabbit/MashRabbitGuide';
 import PikaBallGuide from '../components/Pika/PikaBallGuide';
