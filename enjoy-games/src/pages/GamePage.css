@@ -41,7 +41,7 @@
   color: #ffe600;
 }
 
-/* 🛡️ 게임 시작 모달 전체 화면 덮기 */
+/* 게임 시작 모달 전체 화면 덮기 */
 .game-guide-overlay {
   position: fixed;
   top: 0;
@@ -55,7 +55,7 @@
   z-index: 9999;
 }
 
-/* 🧩 모달 박스 */
+/* 모달 박스 */
 .game-guide-modal {
   background: linear-gradient(135deg, #1f1f1f, #2c2c2c); /* 어두운 고급 배경 */
   border-radius: 20px;
@@ -63,11 +63,11 @@
   width: 400px;
   max-width: 90%;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.9);
-  text-align: center;
+  /* text-align: center; */
   animation: fadeIn 0.5s ease;
 }
 
-/* 📝 모달 안 내용 */
+/* 모달 안 내용 */
 .game-guide-content {
   color: white;
   font-size: 1.1rem;
@@ -75,7 +75,7 @@
   line-height: 1.6;
 }
 
-/* 🚀 게임 시작 버튼 */
+/* 게임 시작 버튼 */
 .start-button {
   background: #ffcc00;
   color: #1a1a1a;

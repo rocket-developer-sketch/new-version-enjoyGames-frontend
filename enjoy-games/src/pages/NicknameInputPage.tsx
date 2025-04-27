@@ -1,10 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import axios from 'axios';
+import { useTranslation } from 'react-i18next'; 
+
 import { saveAuthInfo } from '../utils/authStorage';
 import { GameProvider, GAME_TYPE_MAP } from '../context/GameContext';
-import axios from 'axios';
-import './NicknameInputPage.css';
 import RankingPopup from './RankingPopup';
+
+import './NicknameInputPage.css';
+
 
 const NicknameInputPage = () => {
   const navigate = useNavigate();
@@ -13,12 +17,16 @@ const NicknameInputPage = () => {
   const [nickName, setNickName] = useState('');
   const [loading, setLoading] = useState(false);
   const [showRanking, setShowRanking] = useState(false);
+
+  const { t } = useTranslation(); // i18n 추가
   
   if (!gameType || !(gameType in GAME_TYPE_MAP)) {
-    return <div>❌ 잘못된 게임 접근입니다.</div>;
+    // return <div>❌ 잘못된 게임 접근입니다.</div>;
+    return <div>`${t('auth.wrong_access')}`</div>
   }
   const handleSubmit = async () => {    
-    if (!nickName || !gameType) return alert('닉네임과 게임 종류가 필요합니다.');
+    // if (!nickName || !gameType) return alert('닉네임과 게임 종류가 필요합니다.');
+    if (!nickName || !gameType) return alert(`${t('auth.required_nickname')}`);
 
     setLoading(true);
     try {
@@ -43,30 +51,31 @@ const NicknameInputPage = () => {
     }
   };
 
- 
+  const gameTypeKey = gameType.toLowerCase();
+
   return (
     <GameProvider gameType={gameType as keyof typeof GAME_TYPE_MAP}>
       <div className="nickname-wrapper">
         <div className="nickname-box">
-          <h2>🎮 {GAME_TYPE_MAP[gameType as keyof typeof GAME_TYPE_MAP]}</h2>
-          <h2>게임을 시작합니다!</h2>
+          <h2>🎮 {t(`games.${gameTypeKey}`)}</h2>
+          <h2>{t('start_game')}</h2>
 
           <div className="input-group">
             <input
               type="text"
-              placeholder="닉네임을 입력하세요"
+              placeholder="닉네임을 입력해주세요"
               value={nickName}
               onChange={(e) => setNickName(e.target.value)}
             />
             <button onClick={handleSubmit} disabled={loading}>
-              {loading ? '로딩 중...' : '게임 시작'}
+              {loading ? t(`loading`) : t(`game.start`)}
             </button>
           </div>
 
           {/* 메인/순위 보기 */}
           <div className="action-buttons">
-            <button onClick={() => navigate('/')}><span role="img" aria-label="home">🏠</span> 메인으로</button>
-            <button onClick={() => setShowRanking(true)}><span role="img" aria-label="trophy">🏆</span> 순위 보기</button>        
+            <button onClick={() => navigate('/')}><span role="img" aria-label="home">🏠</span> {t(`game.home`)}</button>
+            <button onClick={() => setShowRanking(true)}><span role="img" aria-label="trophy">🏆</span>  {t(`game.rank`)}</button>        
           </div>
         </div>
         

@@ -1,0 +1,58 @@
+{
+  "chooseGame": "Choose a Game",
+  "loading": "loading...",
+  "start_game": "Let's play!",
+  "close": "Close",
+  "language": {
+    "english": "English",
+    "korean": "한국어"
+  },
+  "auth": {
+    "wrong_access": "wrong access",
+    "required_nickname": "please provide nickname in the box"
+  },
+  "games": {
+    "rabbit": "Mash Rabbit Shooter",
+    "pikachu": "Pika ValleyBall",
+    "combat": "Spaceship Battle",
+    "unknown": "Unknown Game"
+  },
+  "game": {
+    "start": "Start Game",
+    "over": "Game Over",
+    "restart": "Restart",
+    "backToHome": "Back to Home",
+    "home": "Home",
+    "finalScore": "Final Score",
+    "rank": "Leaderboard",
+    "ranking": "Ranking",
+    "points": "points",
+    "error": {
+      "saveFailed": "Failed to save score",
+      "unknown": "Unknown error",
+      "network": "Cannot connect to server",
+      "restartFailed": "Restart failed",
+      "unknownGame": "Unknown game"
+    },
+    "guide": {
+      "preparing": "Preparing guide...",
+      "rabbit": {
+        "title": "Marsh Rabbit Shooter Guide",
+        "desc1": "Aim at the rabbit and shoot!",
+        "desc2": "Move your mouse to aim, click to fire!"
+      },
+      "pikachu": {
+        "title": "Pika Volleyball Guide",
+        "desc1": "Throw balls to hit the Pikachu!",
+        "desc2": "Click to throw normal balls, press Space for big shots!",
+        "desc3": "Charge for 5 seconds after throwing the big ball 3 times!"
+      },
+      "combat": {
+        "title": "Spaceship Battle Guide",
+        "desc1": "Defeat enemies while avoiding attacks!",
+        "desc2": "Move with arrow keys and shoot with Spacebar!",
+        "desc3": "Game over after 3 collisions with enemy planes!"
+      }  
+    }
+  }
+}

@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import './modal.css';
+import './Modal.css';
 
 interface ModalProps {
   children: ReactNode;

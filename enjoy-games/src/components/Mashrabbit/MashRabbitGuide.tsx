@@ -1,9 +1,15 @@
-const MashRabbitGuide = () => (
-  <>
-    <h2>마시토끼 게임 방법</h2>
-    <p>토끼를 조준해서 사격하세요! 🎯</p>
-    <p>마우스를 움직여 조준하고, 클릭하여 발사!</p>
-  </>
-);
+import { useTranslation } from 'react-i18next';
+
+const MashRabbitGuide = () => {
+  const { t } = useTranslation();
+
+  return (
+    <>
+      <h2>{t('game.guide.rabbit.title')}</h2>
+      <p>{t('game.guide.rabbit.desc1')}</p>
+      <p>{t('game.guide.rabbit.desc2')}</p>
+    </>
+  );
+};
 
 export default MashRabbitGuide;

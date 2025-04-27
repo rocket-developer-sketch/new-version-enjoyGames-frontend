@@ -1,13 +1,14 @@
 import React, { createContext, useContext, ReactNode } from 'react';
+
 import SpaceShipInfo from '../components/Spaceship/SpaceShipInfo';
 import MashRabbitGuide from '../components/Mashrabbit/MashRabbitGuide';
 import PikaBallGuide from '../components/Pika/PikaBallGuide';
 import SpaceShipGuide from '../components/Spaceship/SpaceShipGuide';
 
 export const GAME_TYPE_MAP = {
-  RABBIT: 'Mash Rabbit Hunter',
-  PIKACHU: 'Pika ValleyBall',
-  COMBAT: 'Spaceship',
+  RABBIT: 'games.rabbit',
+  PIKACHU: 'games.pikachu',
+  COMBAT: 'games.combat',
 } as const;
 
 export const GAME_GUIDE_MAP = {
@@ -24,13 +25,13 @@ type GameType = keyof typeof GAME_TYPE_MAP;
 
 interface GameContextType {
   gameType: GameType | null;
-  gameLabel: string;
+  gameLabel: string; // i18n key 저장
 }
 
 
 const GameContext = createContext<GameContextType>({
   gameType: null,
-  gameLabel: 'Unknown Game',
+  gameLabel: 'games.unknown',
 });
 
 export const useGameContext = () => useContext(GameContext);
@@ -41,7 +42,7 @@ interface GameProviderProps {
 }
 
 export const GameProvider = ({ gameType, children }: GameProviderProps) => {
-  const gameLabel = gameType ? GAME_TYPE_MAP[gameType] : 'Unknown Game';
+  const gameLabel = gameType ? GAME_TYPE_MAP[gameType] : 'games.unknown';
 
   return (
     <GameContext.Provider value={{ gameType, gameLabel }}>

@@ -1,6 +1,8 @@
 import { ReactNode } from 'react';
 import { getAuthInfo } from '../utils/authStorage';
 import { useGameContext } from '../context/GameContext';
+import { useTranslation } from 'react-i18next';
+
 import './GameLayout.css';
 
 interface GameLayoutProps {
@@ -24,6 +26,7 @@ const GameLayout = ({
 }: GameLayoutProps) => {
   const auth = getAuthInfo();
   const { gameLabel } = useGameContext();
+  const { t } = useTranslation();
 
   const formatTime = (seconds: number) => {
     const m = Math.floor(seconds / 60).toString().padStart(2, '0');
@@ -31,13 +34,15 @@ const GameLayout = ({
     return `${m}:${s}`;
   };
 
+  const gameTypeKey = gameType.toLowerCase();
+
   return (
     <div className="game-layout">
       <main className="game-main">
         <div className="canvas-wrapper">
           {/* 왼쪽 박스 - canvas 기준 */}
           <div className="left-info-box">
-            <div className="info-line"><strong>🎮 {gameLabel}</strong></div>
+            <div className="info-line"><strong>🎮 {t(`games.${gameTypeKey}`)}</strong></div>
             <div className="info-line"><strong>Player:</strong> {auth?.nickName}</div>
             <div className="info-line"><strong>Time left:</strong> {formatTime(timeLeft)}</div>
             <div
