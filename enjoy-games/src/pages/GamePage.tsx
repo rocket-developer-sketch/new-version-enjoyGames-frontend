@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useTranslation } from 'react-i18next'; 
 
 import { saveAuthInfo, getAuthInfo, AuthInfo } from '../utils/authStorage';
+import apiClient from  '../apis/apiClient';
 import { GameProvider, EXTRA_INFO_MAP, GAME_GUIDE_MAP } from '../context/GameContext';
 
 import MashRabbitGameCanvas from '../components/Mashrabbit/MashRabbitGameCanvas';
@@ -81,7 +82,7 @@ const GamePage = () => {
     try {
       const { token, gameType, jti, nickName } = auth;
 
-      const signRes = await axios.post('http://localhost:8081/api/v1/token/scores', {
+      const signRes = await apiClient.post('/api/v1/token/scores', {
         gameType,
         jti,
         score
@@ -94,7 +95,7 @@ const GamePage = () => {
 
       const signedToken = signRes.data.data.signedToken;
 
-      await axios.post('http://localhost:8081/api/v1/scores', {
+      await apiClient.post('/api/v1/scores', {
         gameType,
         nickName,
         score,
@@ -122,7 +123,7 @@ const GamePage = () => {
   const handleRestart = async () => {
     try {
       const oldAuth = getAuthInfo();
-      const res = await axios.post('http://localhost:8081/api/v1/user/token', {
+      const res = await apiClient.post('/api/v1/user/token', {
         nickName: oldAuth?.nickName,
         gameType: oldAuth?.gameType,
       });

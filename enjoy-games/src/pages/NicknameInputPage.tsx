@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import axios from 'axios';
+import apiClient from  '../apis/apiClient';
 import { useTranslation } from 'react-i18next'; 
 
 import { saveAuthInfo } from '../utils/authStorage';
@@ -30,7 +30,7 @@ const NicknameInputPage = () => {
 
     setLoading(true);
     try {
-      const res = await axios.post('http://localhost:8081/api/v1/user/token', {
+      const res = await apiClient.post('/api/v1/user/token', {
         nickName: nickName,
         gameType: gameType,
       });
