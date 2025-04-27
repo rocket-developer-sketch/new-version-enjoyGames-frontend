@@ -44,7 +44,6 @@ const NicknameInputPage = () => {
 
       navigate(`/game/${gameType}`);
     } catch (err) {
-      alert('JWT 발급 실패 😢');
       console.error(err);
     } finally {
       setLoading(false);
