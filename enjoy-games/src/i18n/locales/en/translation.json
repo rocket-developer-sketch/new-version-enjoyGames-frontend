@@ -9,7 +9,7 @@
   },
   "auth": {
     "wrong_access": "wrong access",
-    "required_nickname": "please provide nickname in the box"
+    "required_nickname": "Please enter your nickname"
   },
   "games": {
     "rabbit": "Mash Rabbit Shooter",

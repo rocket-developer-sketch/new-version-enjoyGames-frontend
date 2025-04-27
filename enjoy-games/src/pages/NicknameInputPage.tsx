@@ -62,7 +62,7 @@ const NicknameInputPage = () => {
           <div className="input-group">
             <input
               type="text"
-              placeholder="닉네임을 입력해주세요"
+              placeholder={t('auth.required_nickname')}
               value={nickName}
               onChange={(e) => setNickName(e.target.value)}
             />
